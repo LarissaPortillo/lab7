@@ -15,5 +15,6 @@ d3.json("./airports.json",d3.autoType)
   .domain(d3.extent(airports,d=> d.passengers))
   .range([height,0]);
   
+  const force = d3.forceSimulation(dataset.nodes);
   
 })
