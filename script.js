@@ -13,5 +13,9 @@ fetch("./airports.json")
      const svg = d3.select("body")
     .append("svg")
     .attr("viewBox", [0,0,width,height]) ;
+  
+    const size= d3.scaleLinear()
+    .domain(d3.extent(airports,d=> d.passengers))
+    .range([height,0]);
      
 });
