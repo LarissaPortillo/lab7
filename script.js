@@ -18,7 +18,7 @@ Promise.all([
   console.log("feats",features);
   
   const height = 400;
-  const width= 400;
+  const width=600;
   
   
   const svg = d3.select("body")
@@ -34,24 +34,10 @@ Promise.all([
   
   
   const projection = d3.geoMercator()
-    .fitExtent([[0,0],[width,height]], topojson.feature(worldmap, worldmap.objects.countries));
+    .fitExtent([[0,0],[width, height]], topojson.feature(worldmap, worldmap.objects.countries));
   
   const path= d3.geoPath()
   .projection(projection);
-  
-  svg.append("g")
-  .selectAll("path")
-  .data(features)
-  .join("path")
-  .attr("d", path);
-  
-  
-  svg.append("path")
-	.datum(topojson.mesh(worldmap, worldmap.objects.countries))
-	.attr("d", path)
-	.attr('fill', 'none')
-  .attr('stroke', 'white')
-	.attr("class", "subunit-boundary");
   
   
   const force = d3.forceSimulation(n)
@@ -93,9 +79,21 @@ Promise.all([
   .join("circle")   
   .attr("fill","plum")
   .attr("r", d=>size( d.passengers))
-  .call(drag(force))
-  ;
+  .call(drag(force));
   
+  svg.append("g")
+  .selectAll("path")
+  .data(features)
+  .join("path")
+  .attr("d", path);
+  
+  
+  svg.append("path")
+	.datum(topojson.mesh(worldmap, worldmap.objects.countries))
+	.attr('fill', 'none')
+  .attr('stroke', 'white')
+	.attr("class", "subunit-boundary")
+  .attr("d", path);
   
   nodes.append("title")
        .text(d=>d.name);
