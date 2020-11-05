@@ -1,6 +1,6 @@
 Promise.all([
-  d3.json("./airports.json"),
-  d3.json("/.world-110m.json")
+  d3.json("airports.json", d3.autoType),
+  d3.json("world-110m.json", d3.autoType)
 ])
 .then(data=>{
   let airports=data[0];
