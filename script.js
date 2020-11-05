@@ -1,15 +1,18 @@
-
-d3.json("./airports.json",d3.autoType)
+Promise.all([
+  d3.json("./airports.json"),
+  d3.json("/.world-110m.json")
+])
 .then(data=>{
-  data=data;
-  console.log("a",data);
+  let airports=data[0];
+  console.log("a",airports);
   
-  const n= data.nodes;
-  const l=data.links;
+  const n= airports.nodes;
+  const l=airports.links;
   console.log("l",l);
   console.log("n", n);
   
-
+  let worldmap=data[1];
+  console.log("world",worldmap);
   
   const height = 400;
   const width= 400;
