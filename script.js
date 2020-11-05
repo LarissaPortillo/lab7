@@ -16,7 +16,7 @@ d3.json("./airports.json",d3.autoType)
   
   const svg = d3.select("body")
   .append("svg")
-  .attr("viewBox", [0,0,width, height]) ;
+  .attr("viewBox", [-width/2,-height/2,width, height]) ;
   
   const size= d3.scaleLinear()
   .domain(d3.extent( n, d=>d.passengers))
@@ -25,20 +25,31 @@ d3.json("./airports.json",d3.autoType)
   console.log("size",size(21663240));
   
   const force = d3.forceSimulation(n)
-  .force("charge", d3.forceManyBody())              
+  .force("charge", d3.forceManyBody().strength(1))              
   .force("link", d3.forceLink(l))    
   .force("x", d3.forceX())
   .force("y", d3.forceY());
 
-  //.force("center", d3.forceCenter().x(width/2).y(height/2));
+  //.force("center", d3.forceCenter());
  
+  const links = svg.selectAll("line")               
+  .data(l)               
+  .enter()               
+  .append("line")               .style("stroke", "#ccc")               
+  .style("stroke-width", 1);
   
-  const nodes = svg.selectAll("circle")               
+  const nodes = svg.selectAll("circle")
   .data(n)                              
   .join("circle")   
   .attr("fill","yellow")
+  .attr("stroke","orange")
   .attr("r", d=>size( d.passengers));
   
+  nodes.append("title")
+  .text(d=>d.name);
   
+  force.on ("tick",()=>{
+    nodes.attr("cx",d=>{return d.y; });})
+         .attr("cy",d=>{return d.y;});
   
 })
