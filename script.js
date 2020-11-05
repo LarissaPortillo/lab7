@@ -14,6 +14,7 @@ d3.json("./airports.json",d3.autoType)
   const height = 400;
   const width= 400;
   
+  
   const svg = d3.select("body")
   .append("svg")
   .attr("viewBox", [-width/2,-height/2,width, height]) ;
@@ -30,11 +31,9 @@ d3.json("./airports.json",d3.autoType)
   .force("x", d3.forceX())
   .force("y", d3.forceY());
 
- // .force("center", d3.forceCenter());
  
   const links = svg.selectAll("line")               
-  .data(l)               
-  //.enter()               
+  .data(l)                            
   .join("line")               
   .style("stroke", "#ccc")               
   .style("stroke-width", 1);
@@ -50,14 +49,21 @@ d3.json("./airports.json",d3.autoType)
 
   force.on("tick",()=>{
     nodes.attr("cx",d=>{return d.x; })
-         .attr("cy",d=>{return d.y;})
-          
+         .attr("cy",d=>{return d.y;}); 
     
     links.attr("x1", (d)=> d.source.x)         
       .attr("y1", (d)=>  d.source.y)         
       .attr("x2", (d)=> d.target.x)         
       .attr("y2",(d)=>d.target.y);
+  });
   
-  })
+  const drag= force => {
+    function startdrag(e){
+      if(!e.active) force.alphaTarge(0.3).restart();
+      e.subject.fx=e.subject.x;
+      e.subject.
+    }
+  }
+ 
   
 })
