@@ -34,7 +34,7 @@ Promise.all([
   
   
   const projection = d3.geoMercator()
-    .fitExtent([[0,0],[width, height]], topojson.feature(worldmap, worldmap.objects.countries));
+    .fitExtent([[-width,-height/2],[width, height/1.5]], topojson.feature(worldmap, worldmap.objects.countries));
   
   const path= d3.geoPath()
   .projection(projection);
@@ -88,12 +88,7 @@ Promise.all([
   .attr("d", path);
   
   
-  svg.append("path")
-	.datum(topojson.mesh(worldmap, worldmap.objects.countries))
-	.attr('fill', 'none')
-  .attr('stroke', 'white')
-	.attr("class", "subunit-boundary")
-  .attr("d", path);
+  
   
   nodes.append("title")
        .text(d=>d.name);
@@ -108,6 +103,12 @@ Promise.all([
       .attr("y2",(d)=>d.target.y);
   });
   
+  svg.append("path")
+	.datum(topojson.mesh(worldmap, worldmap.objects.countries))
+	.attr('fill', 'none')
+  .attr('stroke', 'white')
+	.attr("class", "subunit-boundary")
+  .attr("d", path);
 
   
 })
