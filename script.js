@@ -81,13 +81,12 @@ Promise.all([
   .attr("r", d=>size( d.passengers))
   .call(drag(force));
   
-  svg.append("g")
+  const map=svg.append("g")
+  .attr("class","map")
   .selectAll("path")
   .data(features)
   .join("path")
   .attr("d", path);
-  
-  
   
   
   nodes.append("title")
@@ -109,6 +108,23 @@ Promise.all([
   .attr('stroke', 'white')
 	.attr("class", "subunit-boundary")
   .attr("d", path);
-
+/*
+  function switchLayout() {
+    if (visType === "map") {
+      // stop the simulation
+      // set the positions of links and nodes based on geo-coordinates
+      // set the map opacity to 1
+    } else { // force layout
+      // restart the simulation
+      // set the map opacity to 0
+    }
+  }
   
+  d3.selectAll("input[name=type]").on("change", event=>{
+	visType = event.target.value;// selected button
+	switchLayout();
+  });
+ 
+}
+*/
 })
