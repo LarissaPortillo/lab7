@@ -13,6 +13,7 @@ Promise.all([
   
   let worldmap=data[1];
   console.log("world",worldmap);
+  
   const features = topojson.feature(worldmap, worldmap.objects.countries).features;
   console.log("feats",features);
   
@@ -24,11 +25,26 @@ Promise.all([
   .append("svg")
   .attr("viewBox", [-width/2,-height/2,width, height]) ;
   
+  
   const size= d3.scaleLinear()
   .domain(d3.extent( n, d=>d.passengers))
   .range([4,10]); 
   
   console.log("size",size(21663240));
+  
+  
+  const projection = d3.geoMercator()
+    .fitExtent([[0,0],[width,height]], topojson.feature(worldmap, worldmap.objects.countries));
+  
+  const path= d3.geoPath()
+  .projection(projection);
+  
+  svg.append("path")
+	.datum(topojson.mesh(worldmap, worldmap.objects.countries))
+	.attr("d", path)
+	.attr('fill', 'none')
+  	.attr('stroke', 'white')
+	.attr("class", "subunit-boundary");
   
   
   const force = d3.forceSimulation(n)
