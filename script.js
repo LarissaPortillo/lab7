@@ -39,11 +39,18 @@ Promise.all([
   const path= d3.geoPath()
   .projection(projection);
   
+  svg.append("g")
+  .selectAll("path")
+  .data(features)
+  .join("path")
+  .attr("d", path);
+  
+  
   svg.append("path")
 	.datum(topojson.mesh(worldmap, worldmap.objects.countries))
 	.attr("d", path)
 	.attr('fill', 'none')
-  	.attr('stroke', 'white')
+  .attr('stroke', 'white')
 	.attr("class", "subunit-boundary");
   
   
