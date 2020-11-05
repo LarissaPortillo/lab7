@@ -20,7 +20,7 @@ d3.json("./airports.json",d3.autoType)
   
   const size= d3.scaleLinear()
   .domain(d3.extent( n, d=>d.passengers))
-  .range([5,25]);
+  .range([4,10]);
   
   console.log("size",size(21663240));
   
@@ -42,16 +42,16 @@ d3.json("./airports.json",d3.autoType)
   const nodes = svg.selectAll("circle")
   .data(n)                              
   .join("circle")   
-  .attr("fill","yellow")
-  .attr("stroke","orange")
+  .attr("fill","plum")
   .attr("r", d=>size( d.passengers));
   
   nodes.append("title")
-  .text(d=>d.name);
-  
+       .text(d=>d.name);
+
   force.on("tick",()=>{
     nodes.attr("cx",d=>{return d.x; })
-         .attr("cy",d=>{return d.y;});
+         .attr("cy",d=>{return d.y;})
+          
     
     links.attr("x1", (d)=> d.source.x)         
       .attr("y1", (d)=>  d.source.y)         
