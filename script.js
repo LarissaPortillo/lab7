@@ -4,41 +4,40 @@ d3.json("./airports.json",d3.autoType)
   data=data;
   console.log("a",data);
   
+  const n= data.nodes;
+  const l=data.links;
+  console.log("l",l);
+  console.log("n", n);
+  
 
   
-  const height = 650;
-  const width= 500;
- 
+  const height = 400;
+  const width= 400;
+  
   const svg = d3.select("body")
   .append("svg")
-  .attr("viewBox", [0,0,width,height]) ;
+  .attr("viewBox", [0,0,width, height]) ;
   
   const size= d3.scaleLinear()
-  .domain(d3.extent(data.nodes, d=>d.passengers))
-  .range([height,0]);
+  .domain(d3.extent( n, d=>d.passengers))
+  .range([5,25]);
   
   console.log("size",size(21663240));
   
-  const force = d3.forceSimulation(data.nodes)
+  const force = d3.forceSimulation(n)
   .force("charge", d3.forceManyBody())              
-  .force("link", d3.forceLink(data.links))    
+  .force("link", d3.forceLink(l))    
   .force("x", d3.forceX())
   .force("y", d3.forceY());
 
   //.force("center", d3.forceCenter().x(width/2).y(height/2));
-  
-  const links = svg.selectAll("line")               
-    .data(data.links)               
-    .enter()               
-    .join("line")               
-    .style("stroke", "#ccc")               
-    .style("stroke-width", 1);
+ 
   
   const nodes = svg.selectAll("circle")               
-  .data(data.nodes)               
-  .enter()               
-  .join("circle")               
-  .attr("r", size(data.nodes, d=>d.passengers));
+  .data(n)                              
+  .join("circle")   
+  .attr("fill","yellow")
+  .attr("r", d=>size( d.passengers));
   
   
   
