@@ -81,6 +81,14 @@ Promise.all([
   .attr("r", d=>size( d.passengers))
   .call(drag(force));
   
+  
+   nodes.append("title")
+       .text(d=>d.name);
+
+  
+  
+  
+  
   const map=svg.append("g")
   .attr("class","map")
   .selectAll("path")
@@ -88,13 +96,19 @@ Promise.all([
   .join("path")
   .attr("d", path);
   
+  svg.append("path")
+	.datum(topojson.mesh(worldmap, worldmap.objects.countries))
+	.attr('fill', 'none')
+  .attr('stroke', 'white')
+	.attr("class", "subunit-boundary")
+  .attr("d", path); 
   
-  nodes.append("title")
-       .text(d=>d.name);
-
-  force.on("tick",()=>{
-    nodes.attr("cx",d=>{return d.x; })
-         .attr("cy",d=>{return d.y;}); 
+  
+ force.on("tick",()=>{
+    nodes//.attr("cx",d=>{return projection([d.longitude,d.latitude]); })
+         .attr("cy",d=>{return d.y;}) 
+         .attr("cx",d=>{return d.x; });
+         //.attr("cy",d=>{return d.y;}); 
     
     links.attr("x1", (d)=> d.source.x)         
       .attr("y1", (d)=>  d.source.y)         
@@ -102,12 +116,8 @@ Promise.all([
       .attr("y2",(d)=>d.target.y);
   });
   
-  svg.append("path")
-	.datum(topojson.mesh(worldmap, worldmap.objects.countries))
-	.attr('fill', 'none')
-  .attr('stroke', 'white')
-	.attr("class", "subunit-boundary")
-  .attr("d", path);
+  
+  
 /*
   function switchLayout() {
     if (visType === "MAP") {
@@ -116,7 +126,15 @@ Promise.all([
       // set the map opacity to 1
       map.attr("opacity",1)
     } else { // force layout
-      // restart the simulation
+      force.on("tick",()=>{
+        nodes.attr("cx",d=>{return d.x; })
+             .attr("cy",d=>{return d.y;}); 
+
+        links.attr("x1", (d)=> d.source.x)         
+          .attr("y1", (d)=>  d.source.y)         
+          .attr("x2", (d)=> d.target.x)         
+          .attr("y2",(d)=>d.target.y);
+      });
       // set the map opacity to 0
       map.attr("opacity",0);
     }
