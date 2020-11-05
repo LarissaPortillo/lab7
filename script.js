@@ -61,8 +61,21 @@ d3.json("./airports.json",d3.autoType)
     function startdrag(e){
       if(!e.active) force.alphaTarge(0.3).restart();
       e.subject.fx=e.subject.x;
-      e.subject.
+      e.subject.fy=e.subject.y;
     }
+    function dragged(e){
+      e.subject.fx=e.x;
+      e.subject.fy=e.y;
+    }
+    function enddrag(e){
+      if(!e.active) force.alphaTarget(0);
+      e.subject.fx=null;
+      e.subject.fy=null;
+    }
+    return d3.drag()
+      .on("start",startdrag)
+      .on("drag",dragged)
+      .on("end",enddrag);
   }
  
   
