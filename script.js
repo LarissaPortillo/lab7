@@ -25,17 +25,18 @@ d3.json("./airports.json",d3.autoType)
   console.log("size",size(21663240));
   
   const force = d3.forceSimulation(n)
-  .force("charge", d3.forceManyBody().strength(1))              
+  .force("charge", d3.forceManyBody())              
   .force("link", d3.forceLink(l))    
   .force("x", d3.forceX())
   .force("y", d3.forceY());
 
-  //.force("center", d3.forceCenter());
+ // .force("center", d3.forceCenter());
  
   const links = svg.selectAll("line")               
   .data(l)               
-  .enter()               
-  .append("line")               .style("stroke", "#ccc")               
+  //.enter()               
+  .join("line")               
+  .style("stroke", "#ccc")               
   .style("stroke-width", 1);
   
   const nodes = svg.selectAll("circle")
@@ -48,8 +49,15 @@ d3.json("./airports.json",d3.autoType)
   nodes.append("title")
   .text(d=>d.name);
   
-  force.on ("tick",()=>{
-    nodes.attr("cx",d=>{return d.y; });})
+  force.on("tick",()=>{
+    nodes.attr("cx",d=>{return d.x; })
          .attr("cy",d=>{return d.y;});
+    
+    links.attr("x1", (d)=> d.source.x)         
+      .attr("y1", (d)=>  d.source.y)         
+      .attr("x2", (d)=> d.target.x)         
+      .attr("y2",(d)=>d.target.y);
+  
+  })
   
 })
