@@ -110,13 +110,15 @@ Promise.all([
   .attr("d", path);
 /*
   function switchLayout() {
-    if (visType === "map") {
+    if (visType === "MAP") {
       // stop the simulation
       // set the positions of links and nodes based on geo-coordinates
       // set the map opacity to 1
+      map.attr("opacity",1)
     } else { // force layout
       // restart the simulation
       // set the map opacity to 0
+      map.attr("opacity",0);
     }
   }
   
