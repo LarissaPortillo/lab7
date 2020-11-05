@@ -13,6 +13,8 @@ Promise.all([
   
   let worldmap=data[1];
   console.log("world",worldmap);
+  const features = topojson.feature(worldmap, worldmap.objects.countries).features;
+  console.log("feats",features);
   
   const height = 400;
   const width= 400;
