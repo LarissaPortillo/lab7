@@ -28,4 +28,19 @@ d3.json("./airports.json",d3.autoType)
   .force("link", d3.forceLink(data.edges))              
   .force("center", d3.forceCenter().x(width/2).y(height/2));
   
+  const edges = svg.selectAll("line")               
+    .data(data.edges)               
+    .enter()               
+    .append("line")               
+    .style("stroke", "#ccc")               
+    .style("stroke-width", 1);
+  
+  const nodes = svg.selectAll("circle")               
+  .data(data.nodes)               
+  .enter()               
+  .append("circle")               
+  .attr("r", size(data.nodes, d=>d.passengers))               
+  .style("fill", function(d, i) {                   return colors(i);               });
+  
+  
 })
