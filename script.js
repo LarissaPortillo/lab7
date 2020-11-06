@@ -2,10 +2,11 @@ Promise.all([
   d3.json("airports.json", d3.autoType),
   d3.json("world-110m.json", d3.autoType)
 ])
-.then(data=>{
+  .then(data=>{
+
   let airports=data[0];
   console.log("a",airports);
-  
+
   const n= airports.nodes;
   const l=airports.links;
   console.log("l",l);
@@ -17,8 +18,8 @@ Promise.all([
   const features = topojson.feature(worldmap, worldmap.objects.countries).features;
   console.log("feats",features);
   
-  const height = 400;
-  const width=600;
+  const height = 300;
+  const width= 500;
   
   
   const svg = d3.select("body")
@@ -26,7 +27,6 @@ Promise.all([
   .attr("viewBox", [-width/2,-height/2,width, height]) ;
   
   const projection = d3.geoMercator()
-  
     .fitExtent([[-width,-height/2],[width, height/1.5]], topojson.feature(worldmap, worldmap.objects.countries));
   
   const path= d3.geoPath()
@@ -52,7 +52,7 @@ Promise.all([
   
   const size= d3.scaleLinear()
   .domain(d3.extent( n, d=>d.passengers))
-  .range([4,10]); 
+  .range([3,8]); 
   
   
   
@@ -62,7 +62,7 @@ Promise.all([
   .force("x", d3.forceX())
   .force("y", d3.forceY());
 
-    const drag= force => {
+  let drag= (force,t) => {
     function startdrag(e){
       if(!e.active) force.alphaTarget(0.3).restart();
       e.subject.fx=e.subject.x;
@@ -77,13 +77,20 @@ Promise.all([
       e.subject.fx=null;
       e.subject.fy=null;
     }
+
+ 
     return d3.drag()
       .on("start",startdrag)
       .on("drag",dragged)
-      .on("end",enddrag);
+      .on("end",enddrag)
+      .filter( t === "force")
+      ;
+      
   };
  
- 
+  
+  
+
   const links = svg.append("g").selectAll("line")               
   .data(l)                            
   .join("line")               
@@ -94,13 +101,10 @@ Promise.all([
   .data(n)                              
   .join("circle")   
   .attr("fill","plum")
-  .attr("r", d=>size( d.passengers))
-  .call(drag(force));
+  .attr("r", d=>size( d.passengers));
   
+  nodes.call(drag(force,"force"));
   
-
-   nodes.append("title")
-       .text(d=>d.name);
   
   
     force.on("tick",()=>{
@@ -113,47 +117,76 @@ Promise.all([
           .attr("y2",(d)=>d.target.y);
       });
       
-   
+   map.attr("opacity",0);
 
 
+   const labels= nodes.append("title")
+            //.attr("dy", ".35em")
+            .text(d=>d.name);
 
-  function switchLayout() {
-    if (visType === "MAP") {
-      // stop the simulation
-      force.stop();
-      force.on("tick",()=>{
-          nodes//.attr("cx",d=>{return projection([d.longitude,d.latitude]); })
-         .attr("cy",d=>{ d.y = projection([d.longitude,d.latitude])[1]; return d.y;}) 
-         .attr("cx",d=>{d.x = projection([d.longitude, d.latitude])[0]; return d.x;});
-         //.attr("cy",d=>{return d.y;}); 
+    function switchLayout(visType) {
+        if (visType === "map") {
+          // stop the simulation
+          
+          force.stop();
+          
+         
+          // set the positions of links and nodes based on geo-coordinates
+          nodes
+             .call(drag(force,visType))
+             .attr("cy",d=>{ d.y = projection([d.longitude,d.latitude])[1]; return d.y;}) 
+             .attr("cx",d=>{d.x = projection([d.longitude, d.latitude])[0]; return d.x;})
+             .on("mouseover", (e,d)=>{
+                 const pos = d3.pointer(e, window);
+                 d3.select("#tooltip")
+                 .style("left", pos[0] + "px")
+                 .style("top", pos[1] + "px")
+                 .select("#value")
+                 .html(
+                    d.name 
+                  ) 
+                 d3.select("#tooltip").classed("hidden", false);
+             })
+             .on("mouseleave",(event, d) => {
+                d3.select("#tooltip").classed("hidden", true);
+
+              });
+        
+          links.attr("x1", (d)=> d.source.x)         
+            .attr("y1", (d)=>  d.source.y)         
+            .attr("x2", (d)=> d.target.x)         
+            .attr("y2",(d)=>d.target.y);  
+        
+         
+          // set the map opacity to 1
+          map.attr("opacity",1)
     
-    links.attr("x1", (d)=> d.source.x)         
-      .attr("y1", (d)=>  d.source.y)         
-      .attr("x2", (d)=> d.target.x)         
-      .attr("y2",(d)=>d.target.y);
-  });
-      // set the positions of links and nodes based on geo-coordinates
-      // set the map opacity to 1
-      map.attr("opacity",1)
-    } else { // force layout
-      force.alpha(1).restart();
-      
- 
-  
-  
-      
-      // set the map opacity to 0
-      map.attr("opacity",0);
+        } 
+        else 
+        { 
+          // force layout
+          d3.select("#tooltip").classed("hidden", true);
+          force.alpha(1).restart();  
+          nodes.call(drag(force,"force"));
+          nodes.on("mouseover", (e,d)=>{
+            d3.select("#tooltip").classed("hidden", true);
+         });
+          
+           // set the map opacity to 0
+           map.attr("opacity",0);
+      }
     }
-  }
-  
-    
-  d3.selectAll("input[name=type]").on("change", event=>{
-	visType = event.target.value;// selected button
-    console.log("vis".visType);
-	switchLayout();
-  });
-  
- 
 
-})
+    d3.selectAll("input").on("change", event=>{
+        const visType = event.target.value;// selected button
+        console.log("vis",visType);
+        
+       
+        switchLayout(visType);
+    
+      });
+      
+      
+        
+  })
+  

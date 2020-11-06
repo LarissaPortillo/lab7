@@ -20,13 +20,19 @@
   </head>  
   <body>
       <h1>Airport Connections</h1>
-      <div>
-          <input type="radio" id="FORCE" name="pick" value="FORCE"> 
-          <label for="FORCE">Force</label> 
-          <input type="radio" id="MAP" name="pick" value="MAP">
-          <label for="MAP">Map</label>
-    
+ 
+        <form>
+          <input type="radio" name="pick" value="force"> Force
+          <input type="radio" name="pick" value="map"> Map
+        </form>
+
+        
+      <div id="tooltip" class="hidden">
+        <p><span id="value"></span></p>
       </div>
+          
+     
+      
    
   </body>
 </html>
