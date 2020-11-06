@@ -116,9 +116,7 @@ Promise.all([
       .attr("y2",(d)=>d.target.y);
   });
   
-  const pos= projection([d.longitude,d.latittude]);
-  d.x=pos[0];
-  d.y=pos[1]
+ 
   
 /*
   function switchLayout() {
