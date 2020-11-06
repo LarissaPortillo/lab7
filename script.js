@@ -53,10 +53,6 @@ Promise.all([
   .domain(d3.extent( n, d=>d.passengers))
   .range([4,10]); 
   
-  console.log("size",size(21663240));
-  
-  
-  
   
   
   const force = d3.forceSimulation(n)
@@ -101,13 +97,12 @@ Promise.all([
   .call(drag(force));
   
   
-  
-  
-  
+
    nodes.append("title")
        .text(d=>d.name);
-
-  force.on("tick",()=>{
+  
+  
+    force.on("tick",()=>{
         nodes.attr("cx",d=>{return d.x; })
              .attr("cy",d=>{return d.y;}); 
       
@@ -117,20 +112,16 @@ Promise.all([
           .attr("y2",(d)=>d.target.y);
       });
       
-  
-  
-  
-  
-  
-  
+   
+
+
 
   function switchLayout() {
     if (visType === "MAP") {
       // stop the simulation
       force.stop();
       force.on("tick",()=>{
-   
-    nodes//.attr("cx",d=>{return projection([d.longitude,d.latitude]); })
+          nodes//.attr("cx",d=>{return projection([d.longitude,d.latitude]); })
          .attr("cy",d=>{ d.y = projection([d.longitude,d.latitude])[1]; return d.y;}) 
          .attr("cx",d=>{d.x = projection([d.longitude, d.latitude])[0]; return d.x;});
          //.attr("cy",d=>{return d.y;}); 
@@ -141,23 +132,27 @@ Promise.all([
       .attr("y2",(d)=>d.target.y);
   });
       // set the positions of links and nodes based on geo-coordinates
-      fixed();
       // set the map opacity to 1
       map.attr("opacity",1)
     } else { // force layout
       force.alpha(1).restart();
-    
+      
+ 
+  
+  
       
       // set the map opacity to 0
       map.attr("opacity",0);
     }
   }
   
+    
   d3.selectAll("input[name=type]").on("change", event=>{
 	visType = event.target.value;// selected button
+    console.log("vis".visType);
 	switchLayout();
   });
+  
  
-}
 
 })
