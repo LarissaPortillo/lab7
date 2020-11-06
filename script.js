@@ -25,6 +25,29 @@ Promise.all([
   .append("svg")
   .attr("viewBox", [-width/2,-height/2,width, height]) ;
   
+  const projection = d3.geoMercator()
+    .fitExtent([[-width,-height/2],[width, height/1.5]], topojson.feature(worldmap, worldmap.objects.countries));
+  
+  const path= d3.geoPath()
+  .projection(projection);
+  
+  
+  const map=svg.append("g")
+  .attr("class","map")
+  .selectAll("path")
+  .data(features)
+  .join("path")
+  .attr("d", path);
+  
+  svg.append("path")
+	.datum(topojson.mesh(worldmap, worldmap.objects.countries))
+	.attr('fill', 'none')
+  .attr('stroke', 'white')
+	.attr("class", "subunit-boundary")
+  .attr("d", path); 
+  
+  
+  
   
   const size= d3.scaleLinear()
   .domain(d3.extent( n, d=>d.passengers))
@@ -33,11 +56,7 @@ Promise.all([
   console.log("size",size(21663240));
   
   
-  const projection = d3.geoMercator()
-    .fitExtent([[-width,-height/2],[width, height/1.5]], topojson.feature(worldmap, worldmap.objects.countries));
   
-  const path= d3.geoPath()
-  .projection(projection);
   
   
   const force = d3.forceSimulation(n)
@@ -68,13 +87,13 @@ Promise.all([
   };
  
  
-  const links = svg.selectAll("line")               
+  const links = svg.append("g").selectAll("line")               
   .data(l)                            
   .join("line")               
   .style("stroke", "#ccc")               
   .style("stroke-width", 1);
   
-  const nodes = svg.selectAll("circle")
+  const nodes = svg. append("g").selectAll("circle")
   .data(n)                              
   .join("circle")   
   .attr("fill","plum")
@@ -82,29 +101,34 @@ Promise.all([
   .call(drag(force));
   
   
+  
+  
+  
    nodes.append("title")
        .text(d=>d.name);
 
+  force.on("tick",()=>{
+        nodes.attr("cx",d=>{return d.x; })
+             .attr("cy",d=>{return d.y;}); 
+      
+        links.attr("x1", (d)=> d.source.x)         
+          .attr("y1", (d)=>  d.source.y)         
+          .attr("x2", (d)=> d.target.x)         
+          .attr("y2",(d)=>d.target.y);
+      });
+      
   
   
   
   
-  const map=svg.append("g")
-  .attr("class","map")
-  .selectAll("path")
-  .data(features)
-  .join("path")
-  .attr("d", path);
-  
-  svg.append("path")
-	.datum(topojson.mesh(worldmap, worldmap.objects.countries))
-	.attr('fill', 'none')
-  .attr('stroke', 'white')
-	.attr("class", "subunit-boundary")
-  .attr("d", path); 
   
   
- force.on("tick",()=>{
+
+  function switchLayout() {
+    if (visType === "MAP") {
+      // stop the simulation
+      force.stop();
+      force.on("tick",()=>{
    
     nodes//.attr("cx",d=>{return projection([d.longitude,d.latitude]); })
          .attr("cy",d=>{ d.y = projection([d.longitude,d.latitude])[1]; return d.y;}) 
@@ -116,36 +140,13 @@ Promise.all([
       .attr("x2", (d)=> d.target.x)         
       .attr("y2",(d)=>d.target.y);
   });
-  
- function fixed(){
-   n.forEach((d)=>{
-     const pos=projection([d.longitude,d.latitude]);
-     d.x=pos[0];
-     d.y=pos[1];
-   })
- }
-  
-/*
-  function switchLayout() {
-    if (visType === "MAP") {
-      // stop the simulation
-      force.stop();
       // set the positions of links and nodes based on geo-coordinates
       fixed();
       // set the map opacity to 1
       map.attr("opacity",1)
     } else { // force layout
       force.alpha(1).restart();
-    /*
-      force.on("tick",()=>{
-        nodes.attr("cx",d=>{return d.x; })
-             .attr("cy",d=>{return d.y;}); 
-      
-        links.attr("x1", (d)=> d.source.x)         
-          .attr("y1", (d)=>  d.source.y)         
-          .attr("x2", (d)=> d.target.x)         
-          .attr("y2",(d)=>d.target.y);
-      });
+    
       
       // set the map opacity to 0
       map.attr("opacity",0);
@@ -158,5 +159,5 @@ Promise.all([
   });
  
 }
-*/
+
 })
