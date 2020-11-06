@@ -18,8 +18,8 @@ Promise.all([
   const features = topojson.feature(worldmap, worldmap.objects.countries).features;
   console.log("feats",features);
   
-  const height = 300;
-  const width= 500;
+  const height = 400;
+  const width= 600;
   
   
   const svg = d3.select("body")
@@ -52,7 +52,7 @@ Promise.all([
   
   const size= d3.scaleLinear()
   .domain(d3.extent( n, d=>d.passengers))
-  .range([3,8]); 
+  .range([4,8]); 
   
   
   
