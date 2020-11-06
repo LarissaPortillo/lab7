@@ -26,6 +26,7 @@ Promise.all([
   .attr("viewBox", [-width/2,-height/2,width, height]) ;
   
   const projection = d3.geoMercator()
+  
     .fitExtent([[-width,-height/2],[width, height/1.5]], topojson.feature(worldmap, worldmap.objects.countries));
   
   const path= d3.geoPath()
