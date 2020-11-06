@@ -105,9 +105,10 @@ Promise.all([
   
   
  force.on("tick",()=>{
+   
     nodes//.attr("cx",d=>{return projection([d.longitude,d.latitude]); })
-         .attr("cy",d=>{return d.y;}) 
-         .attr("cx",d=>{return d.x; });
+         .attr("cy",d=>{ d.y = projection([d.longitude,d.latitude])[1]; return d.y;}) 
+         .attr("cx",d=>{d.x = projection([d.longitude, d.latitude])[0]; return d.x;});
          //.attr("cy",d=>{return d.y;}); 
     
     links.attr("x1", (d)=> d.source.x)         
