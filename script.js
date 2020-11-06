@@ -122,19 +122,24 @@ Promise.all([
   function switchLayout() {
     if (visType === "MAP") {
       // stop the simulation
+      force.stop();
       // set the positions of links and nodes based on geo-coordinates
+      fixed();
       // set the map opacity to 1
       map.attr("opacity",1)
     } else { // force layout
+      force.alpha(1).restart();
+    /*
       force.on("tick",()=>{
         nodes.attr("cx",d=>{return d.x; })
              .attr("cy",d=>{return d.y;}); 
-
+      
         links.attr("x1", (d)=> d.source.x)         
           .attr("y1", (d)=>  d.source.y)         
           .attr("x2", (d)=> d.target.x)         
           .attr("y2",(d)=>d.target.y);
       });
+      
       // set the map opacity to 0
       map.attr("opacity",0);
     }
