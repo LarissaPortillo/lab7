@@ -116,7 +116,13 @@ Promise.all([
       .attr("y2",(d)=>d.target.y);
   });
   
- 
+ function fixed(){
+   n.forEach((d)=>{
+     const pos=projection([d.longitude,d.latitude]);
+     d.x=pos[0];
+     d.y=pos[1];
+   })
+ }
   
 /*
   function switchLayout() {
